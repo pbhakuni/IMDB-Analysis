@@ -1,0 +1,35 @@
+#Creating Hive tables for performing analysis
+
+# IMDB user table
+create external table imdb_users 
+(                                                                                                                  
+     userid int,                                                                                                                                
+     gender String,                                                                                                                                 
+     age int,                                                                                                                                   
+     occupation int,                                                                                                                            
+     zipcode int                                                                                                                                
+)                                                                                                                                              
+     row format delimited                                                                                                                           
+     fields terminated by '::'                                                                                                                      
+     LOCATION '/user/priyankabhakuni1_gmail/imdb'                                                                                              
+     ;                                                 
+LOAD DATA INPATH '/user/priyankabhakuni1_gmail/imdb/users.dat' into table imdb_users;
+
+# IMDB movies table
+create external table imdb_movies (                                                                                                            
+     movieid int,                                                                                                                                   
+     moviename String,                                                                                                                              
+     genre String                                                                                                                                   
+     )                                                                                                                                              
+     row format delimited fields terminated by '::' LOCATION '/user/priyankabhakuni1_gmail/imdb' ;                                                  
+load data inpath '/user/priyankabhakuni1_gmail/movies.dat' into table imdb_movies;                                                             
+
+# IMDB rating table
+create external table imdb_ratings (                                                                                                           
+userid int,                                                                                                                                    
+movieid int,                                                                                                                                    rating int,                                                                                                                                    
+time double                                                                                                                                    
+)                                                                                                                                              
+row format delimited fields terminated by '::'                                                                                                 
+location '/user/priyankabhakuni1_gmail/imdb';                                                                                                  
+load data inpath '/user/priyankabhakuni1_gmail/ratings.dat' into table imdb_ratings;                                                           
