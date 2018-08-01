@@ -1,0 +1,3 @@
+$ hdfs dfs -put movies.dat.txt /user/priyankabhakuni1_gmail/movies.dat                                        
+$ hdfs dfs -put ratings.dat.txt /user/priyankabhakuni1_gmail/ratings.dat                                      
+$ hdfs dfs -put users.dat.txt /user/priyankabhakuni1_gmail/users.dat                                     
