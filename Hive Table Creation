@@ -1,7 +1,7 @@
 #Creating Hive tables for performing analysis
 
 # IMDB user table
-create external table imdb_users 
+create external table users_imdb 
 (                                                                                                                  
      userid int,                                                                                                                                
      gender String,                                                                                                                                 
@@ -10,26 +10,26 @@ create external table imdb_users
      zipcode int                                                                                                                                
 )                                                                                                                                              
      row format delimited                                                                                                                           
-     fields terminated by '::'                                                                                                                      
-     LOCATION '/user/priyankabhakuni1_gmail/imdb'                                                                                              
-     ;                                                 
-LOAD DATA INPATH '/user/priyankabhakuni1_gmail/imdb/users.dat' into table imdb_users;
+     fields terminated by '\;'                                                                                                                      
+     ;            
+     
+LOAD DATA INPATH '/user/priyankabhakuni1_gmail/testing/users.txt' into table users_imdb;
 
 # IMDB movies table
-create external table imdb_movies (                                                                                                            
+create external table movies_imdb (                                                                                                            
      movieid int,                                                                                                                                   
      moviename String,                                                                                                                              
      genre String                                                                                                                                   
      )                                                                                                                                              
-     row format delimited fields terminated by '::' LOCATION '/user/priyankabhakuni1_gmail/imdb' ;                                                  
-load data inpath '/user/priyankabhakuni1_gmail/movies.dat' into table imdb_movies;                                                             
+     row format delimited fields terminated by '\;' ;                                                  
+load data inpath '/user/priyankabhakuni1_gmail/testing/movies.txt' into table movies_imdb;                                                             
 
 # IMDB rating table
-create external table imdb_ratings (                                                                                                           
+create external table ratings_imdb (                                                                                                           
 userid int,                                                                                                                                    
-movieid int,                                                                                                                                    rating int,                                                                                                                                    
+movieid int,
+rating int,                                                                                                                                    
 time double                                                                                                                                    
 )                                                                                                                                              
-row format delimited fields terminated by '::'                                                                                                 
-location '/user/priyankabhakuni1_gmail/imdb';                                                                                                  
-load data inpath '/user/priyankabhakuni1_gmail/ratings.dat' into table imdb_ratings;                                                           
+row format delimited fields terminated by '\;'  ;                                                                                               
+load data inpath '/user/priyankabhakuni1_gmail/testing/ratings.txt' into table ratings_imdb;                                                           
