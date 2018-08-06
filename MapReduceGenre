@@ -1,0 +1,80 @@
+/*
+Q2: Finding movies whose genre is Fantasy
+*/
+// Driver class
+package com.code.genre;
+
+import java.io.IOException;
+
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+public class GenreDriver {
+
+	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+		Job job = new Job();
+		job.setJarByClass(GenreDriver.class);
+		job.setJobName("Genre");
+		
+		job.setMapperClass(GenreMapper.class);
+		job.setReducerClass(GenreReducer.class);
+		
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(Text.class);
+		
+		FileInputFormat.addInputPath(job, new Path(args[0]));
+		FileOutputFormat.setOutputPath(job, new Path(args[1]));
+		
+	
+		System.out.println(job.waitForCompletion(true) ? 0:1);
+
+	}
+	
+}
+
+//Mapper class
+package com.code.genre;
+
+import java.io.IOException;
+
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+public class GenreMapper extends Mapper<LongWritable,Text,Text,Text> {
+
+	public void map(LongWritable key, Text value, Context conf) throws IOException, InterruptedException {
+		String str = value.toString();
+		String[] arraystr = str.split("::");
+		if(arraystr[2].toLowerCase().contains("fantasy")) {
+			conf.write(new Text(arraystr[2]), new Text(arraystr[1]));
+		}
+		
+	}
+}
+
+//Reducer class
+package com.code.genre;
+
+import java.io.IOException;
+
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+
+public class GenreReducer extends Reducer<Text,Iterable<Text>,Text,Text> {
+
+	public void reduce(Text key, Iterable<Text> value, Context conf) throws IOException, InterruptedException
+	{
+		for(Text values:value) {
+			conf.write(key, values);
+		}
+		
+	}
+}
+
+/*Hadoop run command
+hadoop jar GenreFinal.jar com.code.genre.GenreDriver /user/priyankabhakuni1_gmail/movies.txt /user/priyankabhakuni1_gmail/output_genre
+*/
