@@ -1,0 +1,85 @@
+/*
+Q1: Finding male users whose age is less than or equal to 7
+
+*/
+
+// Driver class
+package com.code.userid;
+
+import java.io.IOException;
+
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+public class UserIdDriver {
+
+	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+		Job job = new Job();
+		job.setJarByClass(UserIdDriver.class);
+		job.setJobName("user id");
+		
+		job.setMapperClass(UserIdMapper.class);
+		job.setReducerClass(UserIdReducer.class);
+		
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(IntWritable.class);
+		
+		FileInputFormat.addInputPath(job, new Path(args[0]));
+		FileOutputFormat.setOutputPath(job, new Path(args[1]));
+		
+		System.out.println(job.waitForCompletion(true) ? 0:1);
+	}
+	
+	
+}
+
+//Mapper class
+package com.code.userid;
+
+import java.io.IOException;
+
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+public class UserIdMapper extends Mapper<LongWritable,Text,Text,IntWritable> {
+    int targetagevalue = 7;
+	public static IntWritable one = new IntWritable(1);
+	public void map(LongWritable key, Text value, Context con) throws IOException, InterruptedException
+	{
+		String line = value.toString();
+		String[] tupples = line.split("::");
+		int currentagevalue = Integer.parseInt(tupples[2].trim());
+		if(tupples[1].trim().equalsIgnoreCase("M") && currentagevalue<=targetagevalue) {
+			con.write(new Text(tupples[0].trim()),one);
+		}
+	}
+}
+
+//Reducer class
+package com.code.userid;
+
+import java.io.IOException;
+
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+
+public class UserIdReducer extends Reducer<Text,IntWritable,Text,IntWritable> {
+	
+	public void reduce(Text key, Iterable<IntWritable> value,Context con) throws IOException, InterruptedException
+	{
+		for(IntWritable values:value) {
+			con.write(key, new IntWritable());
+		}
+	}
+}
+
+/* Running command
+hadoop jar imdbuserid.jar com.code.userid.UserIdDriver /user/priyankabhakuni1_gmail/users_new.txt /user/priyankabhakuni1_gmail/output1
+*/
